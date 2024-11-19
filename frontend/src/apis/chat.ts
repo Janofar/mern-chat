@@ -4,9 +4,9 @@ import { ChatDataForUI, MessageState } from "../store/types";
 const apiUrl = 'http://localhost:5000/api';
 axios.defaults.withCredentials = true;
 
-export const createDirectChat = async (email: string): Promise<void> => {
+export const createDirectChat = async (email: string): Promise<any> => {
   try {
-    await axios.post(`${apiUrl}/chats/direct`, { email });
+    return await axios.post(`${apiUrl}/chats/direct`, { email });
   } catch (error) {
     console.error('Error creating user:', error);
   }

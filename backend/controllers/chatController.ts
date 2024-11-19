@@ -6,7 +6,7 @@ import mongoose, { Types } from 'mongoose';
 export const createGroupChat = async (req: Request, res: Response) => {
   const { name, userIds } = req.body;
   try {
-    const chat = await chatService.createGroupChat(name, userIds);
+    const chat = await chatService.createGroupChat(name, req.user?._id,userIds);
     res.status(201).json(chat);
   } catch (error) {
     res.status(500).json({ message: 'Failed to create chat', error });
@@ -51,7 +51,7 @@ export const createDirectChat = async (req: Request, res: Response): Promise<any
       return res.status(404).json({ message: 'User does not exist' });
     }
     //sender should be from req.user
-    const senderId = new mongoose.Types.ObjectId("6732becbad0f81476b0802f3");
+    const senderId = new mongoose.Types.ObjectId(req.user?._id);
 
     const receiverId = new mongoose.Types.ObjectId(user._id as mongoose.Types.ObjectId);
     const chat = await chatService.createDirectChat(senderId, receiverId);

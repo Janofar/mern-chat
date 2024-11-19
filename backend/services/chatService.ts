@@ -3,9 +3,42 @@ import Chat, { IChat } from '../models/Chat';
 import Message from '../models/Message';
 import mongoose, { Types } from 'mongoose';
 
-export const createGroupChat = async (name: string, userIds: Types.ObjectId[]) => {
-  const chat = await Chat.create({ name, isGroupChat: true, users: userIds });
-  return chat;
+export const createGroupChat = async (name: string,loggedinUserId : any, userIds: Types.ObjectId[]) => {
+  try { 
+    let chat = await Chat.findOne({
+      isGroupChat: false,
+      users: { $all: userIds },
+    }).populate("users", "username email avatar isOnline");
+
+    if (!chat) {
+      chat = await Chat.create({
+        isGroupChat: false,
+        users: userIds,
+        latestMessage: null,
+        name
+      });
+      await chat.populate("users", "username email avatar isOnline");
+    }
+
+    const chatData = {
+      _id: chat._id.toString(),
+      name: chat.name,
+      isGroupChat: chat.isGroupChat,
+      users: chat.users.map((user: any) => ({
+        id: user._id.toString(),
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+        isOnline: user.isOnline,
+      })),
+      otherParticipants: chat.users.find((user: any) => user._id.toString() !== loggedinUserId.toString()),
+      latestMessage: chat.latestMessage,
+      messages: [],
+    };
+    return chatData;
+  } catch (error : any) {
+    throw new Error(`Failed to create or retrieve chat room: ${error.message}`);
+  }
 };
 
 export const getAllChatsForUser = async (userId: mongoose.Types.ObjectId) => {
@@ -116,25 +149,37 @@ export const getChatHistory = async (chatId: mongoose.Types.ObjectId, userId: mo
 
 export const createDirectChat = async (senderId: Types.ObjectId, receiverId: Types.ObjectId) => {
   try {
-    const existingChat = await Chat.findOne({
+    let chat = await Chat.findOne({
       isGroupChat: false,
       users: { $all: [senderId, receiverId] },
-    });
+    }).populate("users", "username email avatar isOnline");
 
-    if (existingChat) {
-      return existingChat;
+    if (!chat) {
+      chat = await Chat.create({
+        isGroupChat: false,
+        users: [senderId, receiverId],
+        latestMessage: null,
+      });
+      await chat.populate("users", "username email avatar isOnline");
     }
 
-    const newChat = new Chat({
-      isGroupChat: false,
-      users: [senderId, receiverId],
-      latestMessage: null,
-    });
-
-    const savedChat = await newChat.save();
-
-    return savedChat;
-  } catch (error) {
-    throw new Error('Failed to create chat room');
+    const chatData = {
+      _id: chat._id.toString(),
+      name: chat.name || null,
+      isGroupChat: chat.isGroupChat,
+      users: chat.users.map((user: any) => ({
+        id: user._id.toString(),
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+        isOnline: user.isOnline,
+      })),
+      receiver: chat.users.find((user: any) => user._id.toString() !== senderId.toString()),
+      latestMessage: chat.latestMessage,
+      messages: [],
+    };
+    return chatData;
+  } catch (error : any) {
+    throw new Error(`Failed to create or retrieve chat room: ${error.message}`);
   }
 };

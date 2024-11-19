@@ -28,6 +28,9 @@ const chatSlice = createSlice({
         state.selectedChat.messages = action.payload
       }
     },
+    addChat: (state, action: PayloadAction<ChatDataForUI>) => {
+      state.chats.push(action.payload);
+    },
     addChatMessage: (state, action: PayloadAction<MessageState>) => {
       if (state.selectedChat) {
         state.selectedChat.messages.push(action.payload)
@@ -43,5 +46,5 @@ const chatSlice = createSlice({
   },
 });
 
-export const { setSelectedChat, setChatsForUser, updateChatMessages,addChatMessage, updateLatestChatMessage } = chatSlice.actions;
+export const { setSelectedChat, setChatsForUser, updateChatMessages,addChatMessage,addChat, updateLatestChatMessage } = chatSlice.actions;
 export default chatSlice.reducer;
