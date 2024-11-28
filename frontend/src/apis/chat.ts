@@ -12,9 +12,15 @@ export const createDirectChat = async (email: string): Promise<any> => {
   }
 };
 
-export const createGroupChat = async (name: string, userIds: []): Promise<void> => {
+export const createGroupChat = async ({
+    name,
+    userIds,
+  }: {
+    name: string;
+    userIds: string[];
+  }): Promise<any> => {
   try {
-    await axios.post(`${apiUrl}/chats/group`, { name, userIds });
+   return await axios.post(`${apiUrl}/chats/group`, { name, userIds });
   } catch (error) {
     console.error('Error creating user:', error);
   }

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { login } from '../store/reducers/authSlice';
 import { useNavigate } from 'react-router-dom';
-import loginUser from '../apis/user';
+import {loginUser} from '../apis/user';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -30,48 +30,62 @@ const Login = () => {
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: 'auto', padding: '20px', textAlign: 'center' }}>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="email" style={{ display: 'block', marginBottom: '5px' }}>Email:</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={{ width: '100%', padding: '8px', fontSize: '16px' }}
-            placeholder="Enter your email"
-          />
-        </div>
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="password" style={{ display: 'block', marginBottom: '5px' }}>Password:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={{ width: '100%', padding: '8px', fontSize: '16px' }}
-            placeholder="Enter your password"
-          />
-        </div>
-        {error && <p style={{ color: 'red', marginBottom: '15px' }}>{error}</p>}
-        <button
-          type="submit"
-          style={{
-            padding: '10px 20px',
-            fontSize: '16px',
-            backgroundColor: '#007BFF',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-          }}
+    <div className="max-w-sm mx-auto p-6 text-center bg-white shadow-lg rounded-lg">
+    <h1 className="mb-6 text-2xl font-bold text-gray-800">Login</h1>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label
+          htmlFor="email"
+          className="block mb-2 text-sm font-medium text-gray-600"
         >
-          Login
-        </button>
-      </form>
-    </div>
+          Email:
+        </label>
+        <input
+          type="email"
+          id="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          placeholder="Enter your email"
+        />
+      </div>
+      <div>
+        <label
+          htmlFor="password"
+          className="block mb-2 text-sm font-medium text-gray-600"
+        >
+          Password:
+        </label>
+        <input
+          type="password"
+          id="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          placeholder="Enter your password"
+        />
+      </div>
+      {error && (
+        <p className="text-red-500 text-sm">{error}</p>
+      )}
+      <button
+        type="submit"
+        className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      >
+        Login
+      </button>
+    </form>
+    <p className="mt-4 text-sm text-gray-600">
+      Not registered?{' '}
+      <a
+        href="/user-register"
+        className="text-blue-600 hover:underline"
+      >
+        Register here
+      </a>
+    </p>
+  </div>
+  
   );
 };
 

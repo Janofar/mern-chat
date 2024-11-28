@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ChatDataForUI, ChatState, MessageState } from '../types';
+import { ChatDataForUI, ChatState, MessageState, User } from '../types';
 
 const initialState: ChatState = {
   chats: [],
@@ -7,10 +7,9 @@ const initialState: ChatState = {
     _id: '',
     name: '',
     isGroupChat: false,
-    users: [],
     messages: [],
   },
-
+  recipientList :[],
 };
 
 const chatSlice = createSlice({
@@ -42,9 +41,12 @@ const chatSlice = createSlice({
           chat.latestMessage = action.payload;
         }
       })
+    },
+    setRecipientList : (state, action: PayloadAction<User[]>) => {
+      state.recipientList = action.payload;
     }
   },
 });
 
-export const { setSelectedChat, setChatsForUser, updateChatMessages,addChatMessage,addChat, updateLatestChatMessage } = chatSlice.actions;
+export const { setSelectedChat, setChatsForUser, updateChatMessages,addChatMessage,addChat, updateLatestChatMessage, setRecipientList} = chatSlice.actions;
 export default chatSlice.reducer;

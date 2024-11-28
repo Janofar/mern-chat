@@ -40,7 +40,7 @@ const ChatList: React.FC<ChatListProps> = ({ chats , selectedChatId }) => {
           <div className="flex items-center space-x-3">
             <div className="relative">
             <img
-                src={chat.receiver?.avatar || "default-avatar-url.jpg"}
+                src={chat.receiver?.avatarUrl || "default-avatar-url.jpg"}
                 alt={chat.name || chat.receiver?.username}
                 className="w-10 h-10 rounded-full object-cover"
               />
@@ -64,7 +64,8 @@ const ChatList: React.FC<ChatListProps> = ({ chats , selectedChatId }) => {
               )}
             </div>
             <div className="flex-1">
-              <h3 className="font-medium text-gray-800">{ chat.receiver?.username}</h3>
+              {chat.isGroupChat ? <h3 className="font-medium text-gray-800">{ chat.name}</h3>
+              : <h3 className="font-medium text-gray-800">{ chat.receiver?.username}</h3>}
               {chat.latestMessage && <p className="text-sm text-gray-500 truncate">{chat.latestMessage?.content}</p>}
             </div>
             <div className="flex flex-col items-end space-y-1">

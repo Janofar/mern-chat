@@ -12,9 +12,9 @@ const initialState: AuthState = {
   currentUser : {
     _id : '',
     username : '',
-    avatar : '',
+    avatarUrl : '',
     isOnline:false,
-    
+    email : '',
   }
 };
 

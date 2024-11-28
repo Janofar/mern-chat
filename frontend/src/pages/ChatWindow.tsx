@@ -7,8 +7,8 @@ import ChatMessage from '../components/ChatMessage';
 import MessageInput from '../components/MessageInput';
 import WebSocketService from '../socket/webSocketService';
 import { getAllChatsForUser } from '../apis/chat';
-import { addChatMessage, setChatsForUser, updateLatestChatMessage } from '../store/reducers/chatSlice';
-import { ChatDataForUI, MessageState } from '../store/types';
+import { addChatMessage, setChatsForUser, setRecipientList, updateLatestChatMessage } from '../store/reducers/chatSlice';
+import { ChatDataForUI, MessageState, User } from '../store/types';
 
 const ChatWindow: React.FC = () => {
   const currentUser = useAppSelector((state) => state.auth.currentUser);
@@ -20,7 +20,15 @@ const ChatWindow: React.FC = () => {
   const fetchChats = async () => {
     const response = await getAllChatsForUser();
     const chats: ChatDataForUI[] = response;
+    const receivers = response
+    .filter((res) => res.receiver)
+    .map((res) => res.receiver) || [];
     dispatch(setChatsForUser(chats));
+    if (receivers.length) {
+      const validReceivers = receivers.filter((receiver): receiver is User => receiver !== undefined);
+      dispatch(setRecipientList(validReceivers));
+    }
+    
   };
   useEffect(() => {
     fetchChats()
@@ -47,7 +55,7 @@ const ChatWindow: React.FC = () => {
       {/* Sidebar */}
       <div className="w-80 bg-white border-r border-gray-200">
         <UserProfile
-          image={currentUser.avatar}
+          image={currentUser.avatarUrl}
           name={currentUser.username}
           isOnline={currentUser.isOnline}
         />
@@ -59,10 +67,10 @@ const ChatWindow: React.FC = () => {
 
       {/* Chat Area */}
       <div className="flex-1 flex flex-col">
-        {selectedChat.receiver && (
+        {selectedChat._id && (
           <>
             <ChatHeader
-              image={selectedChat.receiver?.avatar ?? "default-avatar-url.jpg"}
+              image={!selectedChat.isGroupChat ? (selectedChat.receiver?.avatarUrl ?? "default-avatar-url.jpg") : "default-avatar-url.jpg"}
               name={selectedChat.name ? selectedChat.name : selectedChat.receiver ?
                 selectedChat.receiver.username : ''}
               status="Last seen 5m ago"

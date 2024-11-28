@@ -6,13 +6,13 @@ type MessageProps = {
   sender: {
     _id: string,
     username: string,
-    avatar: string,
+    avatarUrl: string,
     isOnline: boolean,
   };
   receiver?: {
     _id: string,
     username: string,
-    avatar: string,
+    avatarUrl: string,
     isOnline: boolean,
   };
   isGroupChat: boolean;
@@ -23,7 +23,7 @@ const ChatMessage: React.FC<MessageProps> = React.memo(({ content, timestamp, is
     <div className={`flex items-start space-x-2 ${isGroupChat ? 'justify-end' : ''}`}>
       {sender && (
         <img
-          src={sender.avatar || "default-avatar.png"}
+          src={sender.avatarUrl || "default-avatar.png"}
           alt={sender.username || "User Avatar"}
           className="w-8 h-8 rounded-full object-cover"
         />

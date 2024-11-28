@@ -1,8 +1,9 @@
 export interface User {
   _id: string;
   username: string;
-  avatar: string;
+  avatarUrl: string;
   isOnline: boolean;
+  email : string;
 }
 
 export interface MessageState {
@@ -20,7 +21,6 @@ export interface ChatDataForUI{
   _id: string;
   name?: string;
   isGroupChat: boolean;
-  users: User[];
   latestMessage?:MessageState;
   groupAdmins?: User[];
   currentUser ?: User,
@@ -34,4 +34,5 @@ export interface ChatDataForUI{
 export interface ChatState {
   chats: ChatDataForUI[];
   selectedChat : ChatDataForUI;
+  recipientList : User[];
 }

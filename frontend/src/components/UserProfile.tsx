@@ -1,6 +1,7 @@
-import { PlusIcon } from 'lucide-react';
-import React, { useState } from 'react';
+ import { UserPlus, Users } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { DirectChatModal } from './DirectChatModal';
+import { GroupChatModal } from './GroupChatModal';
 
 type UserProfileProps = {
   image: string;
@@ -10,9 +11,13 @@ type UserProfileProps = {
 
 
 const UserProfile: React.FC<UserProfileProps> = ({ image, name, isOnline }) => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isDirectModalOpen, setIsDirectModalOpen] = useState<boolean>(false);
+  const [isGroupModalOpen, setIsGroupModalOpen] = useState<boolean>(false);
 
-  const toggleModal = () => setIsModalOpen((prev) => !prev);
+  const toggleDirectModal = () => setIsDirectModalOpen((prev) => !prev);
+  const toggleGroupModal = () => setIsGroupModalOpen((prev) => !prev);
+ 
+
   return (
     <div className="p-4 border-b border-gray-200">
       <div className="flex items-center justify-between space-x-4">
@@ -30,14 +35,22 @@ const UserProfile: React.FC<UserProfileProps> = ({ image, name, isOnline }) => {
           </div>
         </div>
         <button
-          onClick={toggleModal}
+          onClick={toggleDirectModal}
+          title="Add Direct Chat"
           className="p-2 bg-gray-200 rounded-full hover:bg-gray-300"
         >
-          <PlusIcon className="w-5 h-5 text-gray-600" />
+          <UserPlus className="w-5 h-5 text-gray-600" />
+        </button>
+        <button
+          onClick={toggleGroupModal}
+          className="p-2 bg-gray-200 rounded-full hover:bg-gray-300"
+          title="Add Group Chat"
+        >
+          <Users className="w-5 h-5 text-gray-600" />
         </button>
       </div>
-
-        <DirectChatModal isModalOpen={isModalOpen} toggleModal={toggleModal}/>
+        <GroupChatModal isModalOpen={isGroupModalOpen} toggleModal={toggleGroupModal}/>
+        <DirectChatModal isModalOpen={isDirectModalOpen} toggleModal={toggleDirectModal}/>
     </div>
   );
 };

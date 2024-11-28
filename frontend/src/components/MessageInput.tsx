@@ -24,8 +24,9 @@ const MessageInput: React.FC<MessageInputProps> = ({ chatId }) => {
         receiver: selectedChat.receiver ? {
           _id: selectedChat.receiver._id,
           username: selectedChat.receiver.username,
-          avatar: selectedChat.receiver.avatar,
-          isOnline: selectedChat.receiver.isOnline
+          avatarUrl: selectedChat.receiver.avatarUrl,
+          isOnline: selectedChat.receiver.isOnline,
+          email : selectedChat.receiver.email
         } : undefined,
         content: message,
         chatId: selectedChat._id,
