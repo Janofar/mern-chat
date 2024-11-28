@@ -5,7 +5,6 @@ export interface ChatDTO {
     id: string; 
     name?: string; 
     isGroupChat: boolean;
-    users: UserDTO[];
     latestMessage?: MessageDTO;
     groupAdmins?: UserDTO[];
     currentUser?: UserDTO;

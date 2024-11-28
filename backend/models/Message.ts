@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import { UserDTO } from "./User";
 
 export interface IMessage extends Document {
     _id? : mongoose.Types.ObjectId,
@@ -9,15 +8,6 @@ export interface IMessage extends Document {
     readBy: mongoose.Types.ObjectId[];
   }
 
-export interface MessageDTO {
-  _id :  mongoose.Types.ObjectId,
-  sender: UserDTO,
-  receiver : UserDTO,
-  content: string,
-  chatId: mongoose.Types.ObjectId,
-  isGroupChat: boolean,
-  timestamp : string,
-}
   
   const MessageSchema: Schema = new Schema(
     {

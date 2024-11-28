@@ -2,6 +2,8 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import http from 'http';
 import cors from 'cors';
+import path from 'path';
+import fs from 'fs';
 import cookieParser from 'cookie-parser';
 import { Server } from 'socket.io';
 import chatRoutes from './routes/chatRoutes';
@@ -55,6 +57,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use('/api', authRoutes);
 app.use(authenticate);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/chats', chatRoutes);
 app.use('/api/messages',messageRoutes);
 
