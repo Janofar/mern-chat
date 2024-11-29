@@ -1,7 +1,7 @@
 export interface UserDTO {
     _id: string;
     username: string;
-    avatar: string; 
+    avatarUrl: string; 
     isOnline: boolean;
   }
   

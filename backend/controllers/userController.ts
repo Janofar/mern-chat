@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { authenticateUser, createUser  } from '../services/userService';
 import * as dotenv from 'dotenv';
 import { uploadAvatar } from '../utils/uploads';
+import path from 'path';
 
 dotenv.config();
 // export const setUserOnline = async (req: Request, res: Response) => {
@@ -57,7 +58,6 @@ export const registerUser = async (req: Request, res: Response) => {
     }
 
     const { username, email, password } = req.body;
-    const path = require('path');
     const avatar = req.file ? path.normalize(req.file.path).replace(/\\/g, '/') : '';
     if (!username || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });

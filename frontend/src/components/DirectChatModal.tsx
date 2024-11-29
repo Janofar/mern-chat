@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { createDirectChat } from '../apis/chat';
 import { useAppDispatch } from '../store/hooks';
-import { addChat } from '../store/reducers/chatSlice';
+import { addChat, addRecipientList } from '../store/reducers/chatSlice';
 
 type DirectChatModalProps = {
      isModalOpen : boolean,
@@ -15,7 +15,9 @@ export const DirectChatModal: React.FC<DirectChatModalProps> = ({isModalOpen,tog
     const handleCreateDirectChat = (e: React.FormEvent) => {
         e.preventDefault();
         createDirectChat(email).then((res) => {
-            dispatch(addChat(res.data))
+            const {receiver} = res.data;
+            dispatch(addChat(res.data));
+            dispatch(addRecipientList(receiver));
         });
         toggleModal()
     };

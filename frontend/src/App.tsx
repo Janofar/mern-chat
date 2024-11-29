@@ -5,7 +5,7 @@ import {store} from './store/store';
 import Login from './pages/Login';
 import ChatWindow from './pages/ChatWindow';
 import ProtectedRoute from './routes/protectedRoute';
-import UserRegister from './pages/userRegister';
+import UserRegister from './pages/UserRegister';
 
 const App = () => {
   return (

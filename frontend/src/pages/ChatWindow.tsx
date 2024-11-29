@@ -70,12 +70,16 @@ const ChatWindow: React.FC = () => {
         {selectedChat._id && (
           <>
             <ChatHeader
-              image={!selectedChat.isGroupChat ? (selectedChat.receiver?.avatarUrl ?? "default-avatar-url.jpg") : "default-avatar-url.jpg"}
+           image={
+            !selectedChat.isGroupChat 
+                ? (selectedChat.receiver?.avatarUrl || "default-avatar-url.jpg") 
+                : (selectedChat.groupAvatarUrl || "default-avatar-url.jpg")
+            }
               name={selectedChat.name ? selectedChat.name : selectedChat.receiver ?
                 selectedChat.receiver.username : ''}
               status="Last seen 5m ago"
               isGroupChat={selectedChat.isGroupChat}
-              participantCount={selectedChat.isGroupChat ? 5 : undefined}
+              participantCount={selectedChat.isGroupChat ? selectedChat.otherParticipants?.length : undefined}
             />
 
             {/* Messages Area */}

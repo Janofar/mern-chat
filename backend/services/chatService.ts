@@ -4,28 +4,47 @@ import Message from '../models/Message';
 import mongoose, { Types } from 'mongoose';
 import { UserDTO } from '../types/user';
 
-export const createGroupChat = async (name: string,loggedinUserId : any, userIds: Types.ObjectId[]) => {
+export const createGroupChat = async (name: string,loggedinUserId : any, userIds: Types.ObjectId[],avatar : string) => {
   try { 
     let chat = await Chat.findOne({
-      isGroupChat: false,
-      users: { $all: userIds },
+      isGroupChat: true,
+      users: { $all: [...userIds,loggedinUserId] },
     }).populate("users", "username email avatar isOnline");
 
-    if (!chat) {
+    if (!chat) { 
       chat = await Chat.create({
-        isGroupChat: false,
-        users: userIds,
+        isGroupChat: true,
+        users: [...userIds,loggedinUserId],
         latestMessage: null,
-        name
+        name,
+        groupAdmins : [loggedinUserId],
+        groupAvatar : avatar
       });
-      await chat.populate("users", "username email avatar isOnline");
+       
+      await chat
+      .populate({
+        path: 'users',
+        select: 'username email avatar groupAvatarUrl isOnline',
+        populate: [
+          {
+            path: 'groupAdmin',
+            select: 'username email avatar isOnline',
+          },
+          {
+            path: 'latestMessage',
+            select: 'content timestamp sender',
+          },
+        ],
+      });
+    
     }
 
     const chatData = {
       _id: chat._id.toString(),
       name: chat.name,
+      groupAvatarUrl : chat.groupAvatarUrl,
       isGroupChat: chat.isGroupChat,
-      otherParticipants: chat.users.find((user: any) => user._id.toString() !== loggedinUserId.toString()),
+      otherParticipants: chat.users.filter((user: any) => user._id.toString() !== loggedinUserId.toString()),
       groupAdmins : chat.groupAdmins,
       latestMessage: chat.latestMessage,
       messages: [],
@@ -55,6 +74,8 @@ export const getAllChatsForUser = async (userId: mongoose.Types.ObjectId) => {
     _id: chat._id.toString(),
     name: chat.name,
     isGroupChat: chat.isGroupChat,
+    groupAvatarUrl : chat.groupAvatarUrl,
+    otherParticipants: chat.isGroupChat ? chat.users.filter((user: any) => user._id.toString() !== userId.toString()) : undefined,
     receiver: !chat.isGroupChat ?
       chat.users.find((user: any) => user._id.toString() !== userId.toString()) : undefined,
     latestMessage: chat.latestMessage,
@@ -74,8 +95,11 @@ export const getChatHistory = async (chatId: mongoose.Types.ObjectId, userId: mo
       .exec();
 
     let receiver: any;
+    let otherParticipants : any;
     if (!chat.isGroupChat) {
       receiver = chat.users.find((user: UserDTO) => user._id.toString() !== userId.toString());
+    }else {
+      otherParticipants = chat.users.filter((user: any) => user._id.toString() !== userId.toString())
     }
 
     const messages = await Message
@@ -90,17 +114,13 @@ export const getChatHistory = async (chatId: mongoose.Types.ObjectId, userId: mo
     const mappedMessages = messages.map((message: any) => ({
       _id: message._id.toString(),
       sender: {
-        id: message.sender._id.toString(),
+        _id: message.sender._id.toString(),
         username: message.sender.username,
         avatarUrl: message.sender.avatarUrl,
         isOnline: message.sender.isOnline,
       },
-      receiver: {
-        id: receiver._id.toString(),
-        username: receiver.username,
-        avatarUrl: receiver.avatarUrl,
-        isOnline: receiver.isOnline,
-      },
+      receiver,
+      otherParticipants,
       isGroupChat: chat.isGroupChat,
       timeStamp: message.createdAt.toString(),
       content: message.content,

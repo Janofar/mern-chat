@@ -1,4 +1,5 @@
 import React from 'react';
+import { useAppSelector } from '../store/hooks';
 
 type MessageProps = {
   content: string;
@@ -19,8 +20,9 @@ type MessageProps = {
 };
 
 const ChatMessage: React.FC<MessageProps> = React.memo(({ content, timestamp, isGroupChat, sender }) => {
+  const currentUser = useAppSelector((state) => state.auth.currentUser);
   return (
-    <div className={`flex items-start space-x-2 ${isGroupChat ? 'justify-end' : ''}`}>
+    <div className={`flex items-start space-x-2 ${sender._id == currentUser._id ? 'justify-end' : ''}`}>
       {sender && (
         <img
           src={sender.avatarUrl || "default-avatar.png"}
@@ -29,14 +31,8 @@ const ChatMessage: React.FC<MessageProps> = React.memo(({ content, timestamp, is
         />
       )}
       <div
-        className={`p-3 rounded-lg max-w-md ${isGroupChat
-          ? 'bg-blue-500 text-white rounded-tr-none'
-          : 'bg-white text-gray-800 rounded-tl-none'
-          }`}
+        className={`p-3 rounded-lg max-w-md bg-blue-500 text-white rounded-tr-none`}
       >
-        {!isGroupChat && (
-          <p className="text-xs font-medium text-gray-600 mb-1">{sender?.username}</p>
-        )}
         <p>{content}</p>
         <span
           className={`text-xs ${isGroupChat ? 'text-blue-100' : 'text-gray-400'

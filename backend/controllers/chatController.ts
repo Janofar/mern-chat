@@ -2,16 +2,21 @@ import { Request, Response } from 'express';
 import * as chatService from '../services/chatService';
 import * as userService from '../services/userService';
 import mongoose, { Types } from 'mongoose';
+import { uploadGrpAvatar } from '../utils/uploads';
+import path from 'path';
 
 export const createGroupChat = async (req: Request, res: Response) => {
-  const { name, userIds } = req.body;
-  try {
-    const chat = await chatService.createGroupChat(name, req.user?._id,userIds);
-    res.status(201).json(chat);
-  } catch (error) {
-    res.status(500).json({ message: 'Failed to create chat', error });
-  }
-};
+  uploadGrpAvatar.single("avatar")(req, res, async (err) => {
+    const { name, userIds } = req.body;
+    const avatar = req.file ? path.normalize(req.file.path).replace(/\\/g, '/') : '';
+    try {
+      const chat = await chatService.createGroupChat(name, req.user?._id, userIds,avatar);
+      res.status(201).json(chat);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to create chat', error });
+    }
+  });
+}
 
 export const getAllChats = async (req: Request, res: Response) => {
   const userId = new mongoose.Types.ObjectId(req.user?._id);

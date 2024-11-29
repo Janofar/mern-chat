@@ -21,6 +21,7 @@ export interface ChatDataForUI{
   _id: string;
   name?: string;
   isGroupChat: boolean;
+  groupAvatarUrl ?: string;
   latestMessage?:MessageState;
   groupAdmins?: User[];
   currentUser ?: User,

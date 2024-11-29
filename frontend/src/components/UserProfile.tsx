@@ -34,20 +34,22 @@ const UserProfile: React.FC<UserProfileProps> = ({ image, name, isOnline }) => {
 
           </div>
         </div>
-        <button
-          onClick={toggleDirectModal}
-          title="Add Direct Chat"
-          className="p-2 bg-gray-200 rounded-full hover:bg-gray-300"
-        >
-          <UserPlus className="w-5 h-5 text-gray-600" />
-        </button>
-        <button
-          onClick={toggleGroupModal}
-          className="p-2 bg-gray-200 rounded-full hover:bg-gray-300"
-          title="Add Group Chat"
-        >
-          <Users className="w-5 h-5 text-gray-600" />
-        </button>
+        <div className='flex space-x-4'>
+          <button
+            onClick={toggleDirectModal}
+            title="Add Direct Chat"
+            className="p-2 bg-gray-200 rounded-full hover:bg-gray-300"
+          >
+            <UserPlus className="w-5 h-5 text-gray-600" />
+          </button>
+          <button
+            onClick={toggleGroupModal}
+            className="p-2 bg-gray-200 rounded-full hover:bg-gray-300"
+            title="Add Group Chat"
+          >
+            <Users className="w-5 h-5 text-gray-600" />
+          </button>
+        </div>
       </div>
         <GroupChatModal isModalOpen={isGroupModalOpen} toggleModal={toggleGroupModal}/>
         <DirectChatModal isModalOpen={isDirectModalOpen} toggleModal={toggleDirectModal}/>

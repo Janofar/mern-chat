@@ -46,9 +46,9 @@ const MessageInput: React.FC<MessageInputProps> = ({ chatId }) => {
   return (
     <form onSubmit={handleSubmit} className="p-4 bg-white border-t border-gray-200">
       <div className="flex items-center space-x-4">
-        <button type="button" className="p-2 hover:bg-gray-100 rounded-full">
+        {/* <button type="button" className="p-2 hover:bg-gray-100 rounded-full">
           <Paperclip className="w-5 h-5 text-gray-600" />
-        </button>
+        </button> */}
         <input
           type="text"
           value={message}
@@ -56,9 +56,9 @@ const MessageInput: React.FC<MessageInputProps> = ({ chatId }) => {
           placeholder="Type a message..."
           className="flex-1 p-2 border border-gray-300 rounded-full focus:outline-none focus:border-blue-500"
         />
-        <button type="button" className="p-2 hover:bg-gray-100 rounded-full">
+        {/* <button type="button" className="p-2 hover:bg-gray-100 rounded-full">
           <Smile className="w-5 h-5 text-gray-600" />
-        </button>
+        </button> */}
         <button
           type="submit"
           className="p-2 bg-blue-500 hover:bg-blue-600 rounded-full"

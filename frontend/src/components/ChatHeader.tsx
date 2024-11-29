@@ -10,7 +10,7 @@ type ChatHeaderProps = {
 };
 
 const ChatHeader: React.FC<ChatHeaderProps> = ({ image, name, status, isGroupChat, participantCount }) => (
-  <div className="p-4 bg-white border-b border-gray-200">
+  <div className="p-4 bg-white border-b border-gray-200 cursor-pointer">
     <div className="flex items-center justify-between">
       <div className="flex items-center space-x-4">
         <img
@@ -27,7 +27,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ image, name, status, isGroupCha
           )}
         </div>
       </div>
-      <div className="flex items-center space-x-4">
+      {/* <div className="flex items-center space-x-4">
         <button className="p-2 hover:bg-gray-100 rounded-full">
           <Phone className="w-5 h-5 text-gray-600" />
         </button>
@@ -37,7 +37,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ image, name, status, isGroupCha
         <button className="p-2 hover:bg-gray-100 rounded-full">
           <MoreHorizontal className="w-5 h-5 text-gray-600" />
         </button>
-      </div>
+      </div> */}
     </div>
   </div>
 );

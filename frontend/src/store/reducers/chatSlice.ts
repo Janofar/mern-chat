@@ -44,9 +44,12 @@ const chatSlice = createSlice({
     },
     setRecipientList : (state, action: PayloadAction<User[]>) => {
       state.recipientList = action.payload;
-    }
+    },
+    addRecipientList : (state, action: PayloadAction<User>) => {
+      state.recipientList.push(action.payload);
+    },
   },
 });
 
-export const { setSelectedChat, setChatsForUser, updateChatMessages,addChatMessage,addChat, updateLatestChatMessage, setRecipientList} = chatSlice.actions;
+export const { setSelectedChat, setChatsForUser, updateChatMessages,addChatMessage,addChat, updateLatestChatMessage, setRecipientList, addRecipientList} = chatSlice.actions;
 export default chatSlice.reducer;

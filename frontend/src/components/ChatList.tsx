@@ -40,7 +40,7 @@ const ChatList: React.FC<ChatListProps> = ({ chats , selectedChatId }) => {
           <div className="flex items-center space-x-3">
             <div className="relative">
             <img
-                src={chat.receiver?.avatarUrl || "default-avatar-url.jpg"}
+                src={chat.receiver?.avatarUrl || chat.groupAvatarUrl}
                 alt={chat.name || chat.receiver?.username}
                 className="w-10 h-10 rounded-full object-cover"
               />
