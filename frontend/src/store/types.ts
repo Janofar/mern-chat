@@ -10,11 +10,11 @@ export interface MessageState {
   _id : string,
   sender : User,
   content : string,
-  receiver ?: User,
-  otherParticipants ?:User[],
+  receiver ?: User | undefined,
+  otherParticipants ?:User[] | undefined,
   chatId : string,
   isGroupChat : boolean,
-  timestamp : string,
+  timeStamp : Date,
 }
 
 export interface ChatDataForUI{

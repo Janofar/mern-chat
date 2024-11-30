@@ -31,12 +31,12 @@ const MessageInput: React.FC<MessageInputProps> = ({ chatId }) => {
         content: message,
         chatId: selectedChat._id,
         isGroupChat: selectedChat.isGroupChat,
-        timestamp: Date.now().toString(),
+        timeStamp: new Date(),
       };
 
-      sendMessage(newMessage).then(() => {
-        dispatch(addChatMessage(newMessage));
-        webSocketService.emit('sendMessage', { chatId, message: newMessage });
+      sendMessage(newMessage).then((msg) => {
+        dispatch(addChatMessage(msg));
+        webSocketService.emit('sendMessage', { chatId, message: msg });
         setMessage('');
       });
 

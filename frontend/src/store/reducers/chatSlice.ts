@@ -32,7 +32,7 @@ const chatSlice = createSlice({
     },
     addChatMessage: (state, action: PayloadAction<MessageState>) => {
       if (state.selectedChat) {
-        state.selectedChat.messages.push(action.payload)
+        state.selectedChat.messages = [...state.selectedChat.messages,action.payload]
       }
     },
     updateLatestChatMessage: (state, action: PayloadAction<MessageState>) => {

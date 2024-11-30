@@ -1,11 +1,14 @@
 import mongoose, { Schema } from "mongoose";
+import { ChatDTO } from "../types/chat";
+import { UserDTO } from "../types/user";
 
 export interface IMessage extends Document {
-    _id? : mongoose.Types.ObjectId,
-    sender: mongoose.Types.ObjectId;
+    _id : mongoose.Types.ObjectId,
+    sender: UserDTO;
     content: string;
-    chat: mongoose.Types.ObjectId;
+    chat: ChatDTO;
     readBy: mongoose.Types.ObjectId[];
+    createdAt: Date;
   }
 
   

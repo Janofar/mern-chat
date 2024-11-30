@@ -1,9 +1,10 @@
 import React from 'react';
 import { useAppSelector } from '../store/hooks';
+import moment from 'moment';
 
 type MessageProps = {
   content: string;
-  timestamp: string;
+  timeStamp: Date;
   sender: {
     _id: string,
     username: string,
@@ -19,7 +20,7 @@ type MessageProps = {
   isGroupChat: boolean;
 };
 
-const ChatMessage: React.FC<MessageProps> = React.memo(({ content, timestamp, isGroupChat, sender }) => {
+const ChatMessage: React.FC<MessageProps> = React.memo(({ content, timeStamp, isGroupChat, sender }) => {
   const currentUser = useAppSelector((state) => state.auth.currentUser);
   return (
     <div className={`flex items-start space-x-2 ${sender._id == currentUser._id ? 'justify-end' : ''}`}>
@@ -38,7 +39,7 @@ const ChatMessage: React.FC<MessageProps> = React.memo(({ content, timestamp, is
           className={`text-xs ${isGroupChat ? 'text-blue-100' : 'text-gray-400'
             } mt-1`}
         >
-          {timestamp}
+          {moment(timeStamp).local().format('h:mm A')}
         </span>
       </div>
     </div>

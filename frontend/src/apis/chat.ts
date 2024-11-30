@@ -29,13 +29,14 @@ export const getAllChatsForUser = async (): Promise<ChatDataForUI[]> => {
   }
 };
 
-export const sendMessage = async (message: MessageState): Promise<void> => {
+export const sendMessage = async (message: MessageState): Promise<MessageState> => {
   try {
-    await axios.post(`${apiUrl}/chats/${message.chatId}/message`, message);
+    const response =  await axios.post(`${apiUrl}/chats/${message.chatId}/message`, message);
+    return response.data;
 
   } catch (error) {
     console.error('Error fetching chats:', error);
-
+    throw new Error('Failed to send message');
   }
 }
 

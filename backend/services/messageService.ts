@@ -1,11 +1,49 @@
 import Message from '../models/Message';
-import Chat from '../models/Chat';
+import Chat, { IChat } from '../models/Chat';
 import { Types } from 'mongoose';
+import { UserDTO } from '../types/user';
+import { ChatDTO } from '../types/chat';
+import { MessageDTO } from '../types/message';
 
 export const saveMessage = async (senderId: Types.ObjectId, chatId: Types.ObjectId, content: string) => {
-    const message = await Message.create({ sender: senderId, chat: chatId, content });
+  let message = await Message.create({ sender: senderId, chat: chatId, content });
+
+  message = await message.populate([
+    { path: 'chat' },
+    { path: 'sender', select: 'username avatar avatarUrl isOnline' },
+  ])
     await Chat.findByIdAndUpdate(chatId, { latestMessage: message._id });
-    return message;
+    const chat : ChatDTO = message.chat;
+    const sender : UserDTO = message.sender;
+
+    let receiver: UserDTO | null = null;
+    let otherParticipants: UserDTO[] = [];
+
+    if (!chat.isGroupChat) {
+      receiver = chat.users.find(
+        (user: UserDTO) => user._id.toString() !== senderId.toString()
+      ) || null;
+    } else {
+      otherParticipants = chat.users.filter(
+        (user: UserDTO) => user._id.toString() !== senderId.toString()
+      );
+    }
+
+    return {
+      _id: message._id.toString(),
+      sender: {
+        _id: sender._id.toString(),
+        username: sender.username,
+        avatarUrl: sender.avatarUrl,
+        isOnline: sender.isOnline,
+      },
+      receiver,
+      otherParticipants,
+      isGroupChat: chat.isGroupChat,
+      timeStamp: message.createdAt.toISOString(),
+      content: message.content,
+      createdAt: message.createdAt.toISOString(),
+    };
 };
 
 export const getChatMessages = async (chatId: Types.ObjectId) => {

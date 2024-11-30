@@ -79,7 +79,7 @@ const ChatWindow: React.FC = () => {
                 selectedChat.receiver.username : ''}
               status="Last seen 5m ago"
               isGroupChat={selectedChat.isGroupChat}
-              participantCount={selectedChat.isGroupChat ? selectedChat.otherParticipants?.length : undefined}
+              participants={selectedChat.isGroupChat ? selectedChat.otherParticipants : undefined}
             />
 
             {/* Messages Area */}
@@ -89,7 +89,7 @@ const ChatWindow: React.FC = () => {
                   <ChatMessage
                     key={message._id}
                     content={message.content}
-                    timestamp={message.timestamp}
+                    timeStamp={message.timeStamp}
                     isGroupChat={message.isGroupChat}
                     sender={message.sender}
                     receiver={message.receiver}
