@@ -1,4 +1,4 @@
-# Project Name
+# CHAT APP
 
 ## Description
 This project is a full-stack web application that leverages modern technologies and design principles to deliver a seamless and interactive user experience. The application incorporates real-time updates, reusable components, and a well-structured codebase to ensure maintainability and scalability.
@@ -39,18 +39,25 @@ This project is a full-stack web application that leverages modern technologies 
 root
 ├── frontend
 │   ├── src
+│   │   ├── apis
 │   │   ├── components
+│   │   ├── config
 │   │   ├── pages
-│   │   ├── redux
-│   │   ├── router
+│   │   ├── routes
+│   │   ├── socket
+│   │   ├── store
+│   │   ├── styles
 │   │   ├── App.tsx
 │   │   └── main.tsx
 │   └── tailwind.config.js
 ├── backend
+│   ├── config
 │   ├── controllers
+│   ├── middleware
 │   ├── models
 │   ├── routes
 │   ├── services
+│   ├── types
 │   ├── app.ts
 │   └── server.ts
 ├── package.json
