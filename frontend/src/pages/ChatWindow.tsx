@@ -7,7 +7,7 @@ import ChatMessage from '../components/ChatMessage';
 import MessageInput from '../components/MessageInput';
 import WebSocketService from '../socket/webSocketService';
 import { getAllChatsForUser } from '../apis/chat';
-import { addChatMessage, setChatsForUser, setRecipientList, updateLatestChatMessage } from '../store/reducers/chatSlice';
+import { addChatMessage, setChatsForUser, setRecipientList, setSelectedChat, updateLatestChatMessage } from '../store/reducers/chatSlice';
 import { ChatDataForUI, MessageState, User } from '../store/types';
 
 const ChatWindow: React.FC = () => {
