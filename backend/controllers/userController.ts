@@ -5,27 +5,6 @@ import { uploadAvatar } from '../utils/uploads';
 import path from 'path';
 
 dotenv.config();
-// export const setUserOnline = async (req: Request, res: Response) => {
-//   const { userId, status } = req.body;
-//   try {
-//     await updateOnlineStatus(userId, status);
-//     res.status(200).json({ message: 'User status updated successfully' });
-//   } catch (error) {
-//     res.status(500).json({ message: 'Failed to update user status', error });
-//   }
-// };
-
-// export const checkUserOnlineStatus = async (req: Request, res: Response) => {
-//   const { userId } = req.params;
-//   try {
-//     const isOnline = await getOnlineStatus(userId);
-//     res.status(200).json({ userId, isOnline });
-//   } catch (error) {
-//     res.status(500).json({ message: 'Failed to get user status', error });
-//   }
-// };
-
-
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 

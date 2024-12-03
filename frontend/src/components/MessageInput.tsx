@@ -21,13 +21,6 @@ const MessageInput: React.FC<MessageInputProps> = ({ chatId }) => {
       const newMessage: MessageState = {
         _id: '',
         sender: currentUser,
-        receiver: selectedChat.receiver ? {
-          _id: selectedChat.receiver._id,
-          username: selectedChat.receiver.username,
-          avatarUrl: selectedChat.receiver.avatarUrl,
-          isOnline: selectedChat.receiver.isOnline,
-          email : selectedChat.receiver.email
-        } : undefined,
         content: message,
         chatId: selectedChat._id,
         isGroupChat: selectedChat.isGroupChat,

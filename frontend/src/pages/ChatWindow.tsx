@@ -15,7 +15,7 @@ const ChatWindow: React.FC = () => {
   const chats = useAppSelector((state) => state.chat.chats);
   const selectedChat = useAppSelector((state) => state.chat.selectedChat);
   const messages = useAppSelector((state) => state.chat.selectedChat.messages);
-
+console.log(messages);
   const dispatch = useAppDispatch();
   const fetchChats = async () => {
     const response = await getAllChatsForUser();
@@ -77,7 +77,7 @@ const ChatWindow: React.FC = () => {
             }
               name={selectedChat.name ? selectedChat.name : selectedChat.receiver ?
                 selectedChat.receiver.username : ''}
-              status="Last seen 5m ago"
+              status=""
               isGroupChat={selectedChat.isGroupChat}
               participants={selectedChat.isGroupChat ? selectedChat.otherParticipants : undefined}
             />
@@ -92,7 +92,6 @@ const ChatWindow: React.FC = () => {
                     timeStamp={message.timeStamp}
                     isGroupChat={message.isGroupChat}
                     sender={message.sender}
-                    receiver={message.receiver}
                   />
                 )
               })}

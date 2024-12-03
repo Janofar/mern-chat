@@ -1,9 +1,11 @@
-import { UserDTO } from "./user";
+import { User } from "./user";
 
-export interface MessageDTO {
-    id: string;
-    sender: UserDTO;
-    content: string;
-    createdAt: string;
+export interface Message {
+    _id : string;
+    sender : User;
+    content : string;
+    chatId : string;
+    isGroupChat : boolean;
+    timeStamp : String;
   }
   

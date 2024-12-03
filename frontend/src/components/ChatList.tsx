@@ -17,8 +17,8 @@ const ChatList: React.FC<ChatListProps> = ({ chats , selectedChatId }) => {
     dispatch(setSelectedChat(chat));
   
     getChatHistory(chat._id)
-      .then((res) => {
-        dispatch(updateChatMessages(res.messages));
+      .then((msgs) => {
+        dispatch(updateChatMessages(msgs));
         webSocketService.emit('joinChat', { chatId: chat._id });
       })
       .catch((error) => {

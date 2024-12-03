@@ -41,9 +41,6 @@ io.on('connection', (socket) => {
   });
 
   socket.on('sendMessage', async ({ chatId, message }) => {
-    //const savedMessage = await getRecentChatMessages(chatId,1,userId);
-   // console.log('savedMessage');
-    //const savedMessage = await saveMessage(message.sender._id, chatId, message.content);
     io.to(chatId).emit('messageReceived', message);
   });
 

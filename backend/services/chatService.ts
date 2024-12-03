@@ -2,9 +2,10 @@
 import Chat, { IChat } from '../models/Chat';
 import Message from '../models/Message';
 import mongoose, { Types } from 'mongoose';
-import { UserDTO } from '../types/user';
+import { ChatDTO } from '../types/chat';
+import { Message as MessageType} from '../types/message';
 
-export const createGroupChat = async (name: string,loggedinUserId : any, userIds: Types.ObjectId[],avatar : string) => {
+export const createGroupChat = async (name: string,loggedinUserId : any, userIds: Types.ObjectId[],avatar : string) : Promise <ChatDTO>=> {
   try { 
     let chat = await Chat.findOne({
       isGroupChat: true,
@@ -42,7 +43,7 @@ export const createGroupChat = async (name: string,loggedinUserId : any, userIds
     const chatData = {
       _id: chat._id.toString(),
       name: chat.name,
-      groupAvatarUrl : chat.groupAvatarUrl,
+      groupAvatarUrl : chat?.groupAvatarUrl || null,
       isGroupChat: chat.isGroupChat,
       otherParticipants: chat.users.filter((user: any) => user._id.toString() !== loggedinUserId.toString()),
       groupAdmins : chat.groupAdmins,
@@ -55,7 +56,7 @@ export const createGroupChat = async (name: string,loggedinUserId : any, userIds
   }
 };
 
-export const getAllChatsForUser = async (userId: mongoose.Types.ObjectId) => {
+export const getAllChatsForUser = async (userId: mongoose.Types.ObjectId) : Promise <ChatDTO[]> => {
   const chats = await Chat.find({ users: userId })
     .populate({
       path: 'users',
@@ -74,10 +75,10 @@ export const getAllChatsForUser = async (userId: mongoose.Types.ObjectId) => {
     _id: chat._id.toString(),
     name: chat.name,
     isGroupChat: chat.isGroupChat,
-    groupAvatarUrl : chat.groupAvatarUrl,
-    otherParticipants: chat.isGroupChat ? chat.users.filter((user: any) => user._id.toString() !== userId.toString()) : undefined,
+    groupAvatarUrl : chat?.groupAvatarUrl || null,
+    otherParticipants: chat.isGroupChat ? chat.users.filter((user: any) => user._id.toString() !== userId.toString()) : null,
     receiver: !chat.isGroupChat ?
-      chat.users.find((user: any) => user._id.toString() !== userId.toString()) : undefined,
+      chat.users.find((user: any) => user._id.toString() !== userId.toString()) : null,
     latestMessage: chat.latestMessage,
     messages: [],
   }));
@@ -85,7 +86,7 @@ export const getAllChatsForUser = async (userId: mongoose.Types.ObjectId) => {
   return chatsWithEmptyMessages;
 };
 
-export const getChatHistory = async (chatId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId) => {
+export const getChatHistory = async (chatId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId) : Promise<MessageType[]> => {
   try {
     const chat: any = await Chat.findById(chatId)
       .populate({
@@ -94,15 +95,7 @@ export const getChatHistory = async (chatId: mongoose.Types.ObjectId, userId: mo
       })
       .exec();
 
-    let receiver: any;
-    let otherParticipants : any;
-    if (!chat.isGroupChat) {
-      receiver = chat.users.find((user: UserDTO) => user._id.toString() !== userId.toString());
-    }else {
-      otherParticipants = chat.users.filter((user: any) => user._id.toString() !== userId.toString())
-    }
-
-    const messages = await Message
+    const allMessages = await Message
       .find({ chat: chat._id })
       .sort({ createdAt: 1 })
       .populate({
@@ -111,7 +104,7 @@ export const getChatHistory = async (chatId: mongoose.Types.ObjectId, userId: mo
       })
       .exec();
 
-    const mappedMessages = messages.map((message: any) => ({
+    const messages = allMessages.map((message: any) => ({
       _id: message._id.toString(),
       sender: {
         _id: message.sender._id.toString(),
@@ -119,17 +112,14 @@ export const getChatHistory = async (chatId: mongoose.Types.ObjectId, userId: mo
         avatarUrl: message.sender.avatarUrl,
         isOnline: message.sender.isOnline,
       },
-      receiver,
-      otherParticipants,
+      chatId : message.chatId,
       isGroupChat: chat.isGroupChat,
       timeStamp: message.createdAt.toString(),
       content: message.content,
       createdAt: message.createdAt.toISOString(),
     }));
 
-    return {
-      messages: mappedMessages,
-    };
+    return messages;
 
   } catch (error) {
     throw new Error('Failed to retrieve chat history');
@@ -137,7 +127,7 @@ export const getChatHistory = async (chatId: mongoose.Types.ObjectId, userId: mo
 };
 
 
-export const createDirectChat = async (senderId: Types.ObjectId, receiverId: Types.ObjectId) => {
+export const createDirectChat = async (senderId: Types.ObjectId, receiverId: Types.ObjectId) : Promise<ChatDTO> => {
   try {
     let chat = await Chat.findOne({
       isGroupChat: false,
@@ -156,6 +146,7 @@ export const createDirectChat = async (senderId: Types.ObjectId, receiverId: Typ
     const chatData = {
       _id: chat._id.toString(),
       isGroupChat: chat.isGroupChat,
+      groupAvatarUrl : chat?.groupAvatarUrl || null,
       receiver: chat.users.find((user: any) => user._id.toString() !== senderId.toString()),
       latestMessage: chat.latestMessage,
       messages: [],

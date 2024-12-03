@@ -10,8 +10,6 @@ export interface MessageState {
   _id : string,
   sender : User,
   content : string,
-  receiver ?: User | undefined,
-  otherParticipants ?:User[] | undefined,
   chatId : string,
   isGroupChat : boolean,
   timeStamp : Date,

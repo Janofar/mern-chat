@@ -1,6 +1,7 @@
 import axios from "axios";
-
+import { config } from "../config/config";
 const apiUrl = 'http://localhost:5000/api';
+// const apiUrl = config.apiUrl;
 
 export const createUser = async (userData: FormData): Promise<void> => {
   try {

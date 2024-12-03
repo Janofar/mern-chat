@@ -29,8 +29,8 @@ const UserProfile: React.FC<UserProfileProps> = ({ image, name, isOnline }) => {
           />
           <div>
             <h2 className="font-semibold text-gray-800">{name}</h2>
-            {isOnline ? <span className="text-sm text-green-500">Online</span> :
-              <span className="text-sm text-green-500">Offline</span>}
+            {/* {isOnline ? <span className="text-sm text-green-500">Online</span> :
+              <span className="text-sm text-green-500">Offline</span>} */}
 
           </div>
         </div>
