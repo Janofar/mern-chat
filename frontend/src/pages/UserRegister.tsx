@@ -1,52 +1,73 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createUser } from "../apis/user";
 import Swal from "sweetalert2";
+import { createUser } from "../apis/user"; // Replace with your actual service
 
-
-const UserRegister : React.FC= () => {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
-  const [avatar, setAvatar] = useState<File | null>(null);
+const UserRegister: React.FC = () => {
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    avatar: null as File | null,
+  });
   const [error, setError] = useState<string>("");
   const navigate = useNavigate();
 
-  const onSwitchToLogin = ()=>{
-    navigate("/");
-  }
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value, files } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: files ? files[0] : value,
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("username", username);
-    formData.append("email", email);
-    formData.append("password", password);
+    const { username, email, password, confirmPassword, avatar } = formData;
+    if(!email){
+      setError("Email is not provided");
+      return;
+    }
+
+    if(!username){
+      setError("User name is not provided");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+    setError('');
+
+    const data = new FormData();
+    data.append("username", username);
+    data.append("email", email);
+    data.append("password", password);
     if (avatar) {
-      formData.append("avatar", avatar);
+      data.append("avatar", avatar);
     }
 
     try {
-      await createUser(formData).then(()=>{
-        Swal.fire({
-            icon: 'success',
-            title: 'Registration Successful!',
-            text: 'You have been registered successfully.',
-            confirmButtonText: 'Okay',
-          });
-      })
-      
+      await createUser(data);
+      Swal.fire({
+        icon: "success",
+        title: "Registration Successful!",
+        text: "You have been registered successfully.",
+        confirmButtonText: "Okay",
+      });
+      navigate("/");
     } catch (err: any) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: err.response?.data?.message || 'Something went wrong!',
-            confirmButtonText: 'Try Again',
-        });
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: err.response?.data?.message || "Something went wrong!",
+        confirmButtonText: "Try Again",
+      });
     }
   };
-
 
   return (
     <div className="max-w-sm mx-auto p-6 text-center bg-white shadow-lg rounded-lg">
@@ -62,10 +83,10 @@ const UserRegister : React.FC= () => {
           <input
             type="text"
             id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            value={formData.username}
+            onChange={handleInputChange}
             placeholder="Enter your username"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
         </div>
         <div>
@@ -78,10 +99,10 @@ const UserRegister : React.FC= () => {
           <input
             type="email"
             id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            value={formData.email}
+            onChange={handleInputChange}
             placeholder="Enter your email"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
         </div>
         <div>
@@ -94,10 +115,10 @@ const UserRegister : React.FC= () => {
           <input
             type="password"
             id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            value={formData.password}
+            onChange={handleInputChange}
             placeholder="Enter your password"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
         </div>
         <div>
@@ -110,10 +131,10 @@ const UserRegister : React.FC= () => {
           <input
             type="password"
             id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            value={formData.confirmPassword}
+            onChange={handleInputChange}
             placeholder="Confirm your password"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
         </div>
         <div>
@@ -126,7 +147,7 @@ const UserRegister : React.FC= () => {
           <input
             type="file"
             id="avatar"
-            onChange={(e) => setAvatar(e.target.files ? e.target.files[0] : null)}
+            onChange={handleInputChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
         </div>
@@ -141,7 +162,7 @@ const UserRegister : React.FC= () => {
       <p className="mt-4 text-sm text-gray-600">
         Already registered?{" "}
         <button
-          onClick={onSwitchToLogin}
+          onClick={() => navigate("/")}
           className="text-blue-600 hover:underline"
         >
           Login here
