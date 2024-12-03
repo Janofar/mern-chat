@@ -1,7 +1,11 @@
  import { UserPlus, Users } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
-import { DirectChatModal } from './DirectChatModal';
-import { GroupChatModal } from './GroupChatModal';
+import React, {useState } from 'react';
+import {Modal} from './common/Modal';
+import { GroupChatForm } from './GroupChatForm';
+import { DirectChatForm } from './DirectChatForm';
+import { createDirectChat, createGroupChat } from '../apis/chat';
+import { useAppDispatch } from '../store/hooks';
+import { addChat, addRecipientList } from '../store/reducers/chatSlice';
 
 type UserProfileProps = {
   image: string;
@@ -11,11 +15,12 @@ type UserProfileProps = {
 
 
 const UserProfile: React.FC<UserProfileProps> = ({ image, name, isOnline }) => {
-  const [isDirectModalOpen, setIsDirectModalOpen] = useState<boolean>(false);
-  const [isGroupModalOpen, setIsGroupModalOpen] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+  const [isDirectChatOpen, setIsDirectModalOpen] = useState<boolean>(false);
+  const [isGroupChatOpen, setIsGroupModalOpen] = useState<boolean>(false);
 
-  const toggleDirectModal = () => setIsDirectModalOpen((prev) => !prev);
-  const toggleGroupModal = () => setIsGroupModalOpen((prev) => !prev);
+  const toggleDirectChatModal = () => setIsDirectModalOpen((prev) => !prev);
+  const toggleGroupChatModal = () => setIsGroupModalOpen((prev) => !prev);
  
 
   return (
@@ -36,14 +41,14 @@ const UserProfile: React.FC<UserProfileProps> = ({ image, name, isOnline }) => {
         </div>
         <div className='flex space-x-4'>
           <button
-            onClick={toggleDirectModal}
+            onClick={toggleDirectChatModal}
             title="Add Direct Chat"
             className="p-2 bg-gray-200 rounded-full hover:bg-gray-300"
           >
             <UserPlus className="w-5 h-5 text-gray-600" />
           </button>
           <button
-            onClick={toggleGroupModal}
+            onClick={toggleGroupChatModal}
             className="p-2 bg-gray-200 rounded-full hover:bg-gray-300"
             title="Add Group Chat"
           >
@@ -51,8 +56,35 @@ const UserProfile: React.FC<UserProfileProps> = ({ image, name, isOnline }) => {
           </button>
         </div>
       </div>
-        <GroupChatModal isModalOpen={isGroupModalOpen} toggleModal={toggleGroupModal}/>
-        <DirectChatModal isModalOpen={isDirectModalOpen} toggleModal={toggleDirectModal}/>
+      <Modal isOpen={isDirectChatOpen} onClose={toggleDirectChatModal} title="Add New Contact">
+        <DirectChatForm
+          onSubmit={(email) => {
+            createDirectChat(email).then((res) => {
+              dispatch(addChat(res.data));
+              dispatch(addRecipientList(res.data.receiver));
+              toggleDirectChatModal();
+            });
+          }}
+          onClose={toggleDirectChatModal}
+        />
+      </Modal>
+
+      <Modal isOpen={isGroupChatOpen} onClose={toggleGroupChatModal} title="Create Group Chat">
+        <GroupChatForm
+          onSubmit={(data) => {
+            const formData = new FormData();
+            formData.append("name", data.groupName);
+            data.userIds.forEach((id) => formData.append("userIds[]", id));
+            if (data.avatar) formData.append("avatar", data.avatar);
+
+            createGroupChat(formData).then((res) => {
+              dispatch(addChat(res.data));
+              toggleGroupChatModal();
+            });
+          }}
+          onClose={toggleGroupChatModal}
+        />
+      </Modal>
     </div>
   );
 };

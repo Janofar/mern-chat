@@ -7,13 +7,7 @@ import { Message as MessageType} from '../types/message';
 
 export const createGroupChat = async (name: string,loggedinUserId : any, userIds: Types.ObjectId[],avatar : string) : Promise <ChatDTO>=> {
   try { 
-    let chat = await Chat.findOne({
-      isGroupChat: true,
-      users: { $all: [...userIds,loggedinUserId] },
-    }).populate("users", "username email avatar isOnline");
-
-    if (!chat) { 
-      chat = await Chat.create({
+     let chat = await Chat.create({
         isGroupChat: true,
         users: [...userIds,loggedinUserId],
         latestMessage: null,
@@ -26,19 +20,7 @@ export const createGroupChat = async (name: string,loggedinUserId : any, userIds
       .populate({
         path: 'users',
         select: 'username email avatar groupAvatarUrl isOnline',
-        populate: [
-          {
-            path: 'groupAdmin',
-            select: 'username email avatar isOnline',
-          },
-          {
-            path: 'latestMessage',
-            select: 'content timestamp sender',
-          },
-        ],
       });
-    
-    }
 
     const chatData = {
       _id: chat._id.toString(),

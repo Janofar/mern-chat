@@ -15,7 +15,6 @@ const ChatWindow: React.FC = () => {
   const chats = useAppSelector((state) => state.chat.chats);
   const selectedChat = useAppSelector((state) => state.chat.selectedChat);
   const messages = useAppSelector((state) => state.chat.selectedChat.messages);
-console.log(messages);
   const dispatch = useAppDispatch();
   const fetchChats = async () => {
     const response = await getAllChatsForUser();
