@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Phone, Video, MoreHorizontal } from 'lucide-react';
-import ParticipantsModal from './ParticipantsListModal';
 import { User } from '../store/types';
 import { useAppSelector } from '../store/hooks';
+import { Modal } from './common/Modal';
+import ParticipantsContent from './ParticipantContent';
 
 type ChatHeaderProps = {
   image: string;
@@ -28,17 +29,17 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ image, name, status, isGroupCha
           <div onClick={isGroupChat ? () => setIsParticipantModalOpen(true) : undefined}>
             <h2 className="font-semibold text-gray-800">{name}</h2>
             {isGroupChat ? (
-              <span className="text-sm text-gray-500">{participants?.length} participants</span>
+             <span className="text-sm text-gray-500">{(participants?.length ?? 0) + 1} participants</span>
             ) : (
               <span className="text-sm text-gray-500">{status}</span>
             )}
           </div>
         </div>
-        {isGroupChat && <ParticipantsModal
-          show={isParticipantModalOpen}
-          onClose={toggleParticipantModal}
-          participants={[...(participants || []), currentUser]}
-        />}
+        {isGroupChat && 
+        <Modal isOpen={isParticipantModalOpen} onClose={toggleParticipantModal} title="Participants">
+            <ParticipantsContent participants={[...(participants || []), currentUser]} />
+          </Modal>
+          }
         {/* <div className="flex items-center space-x-4">
           <button className="p-2 hover:bg-gray-100 rounded-full">
             <Phone className="w-5 h-5 text-gray-600" />
