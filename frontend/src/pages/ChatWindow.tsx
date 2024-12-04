@@ -9,6 +9,7 @@ import WebSocketService from '../socket/webSocketService';
 import { getAllChatsForUser } from '../apis/chat';
 import { addChatMessage, setChatsForUser, setRecipientList, setSelectedChat, updateLatestChatMessage } from '../store/reducers/chatSlice';
 import { ChatDataForUI, MessageState, User } from '../store/types';
+import moment from "moment";
 
 const ChatWindow: React.FC = () => {
   const currentUser = useAppSelector((state) => state.auth.currentUser);
@@ -32,7 +33,7 @@ const ChatWindow: React.FC = () => {
   useEffect(() => {
     fetchChats()
   }, [])
-
+  let lastRenderedDate: string | null = null; 
   useEffect(() => {
 
     WebSocketService.connect('http://localhost:5000');
@@ -48,6 +49,19 @@ const ChatWindow: React.FC = () => {
       WebSocketService.disconnect();
     };
   }, []);
+
+  const formatMsgDate = (date: moment.MomentInput) => {
+    const today = moment().startOf("day");
+    const yesterday = moment().subtract(1, "day").startOf("day");
+
+    if (moment(date).isSame(today, "day")) {
+      return "Today";
+    } else if (moment(date).isSame(yesterday, "day")) {
+      return "Yesterday";
+    } else {
+      return moment(date).format("MMMM D, YYYY");
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -126,18 +140,30 @@ const ChatWindow: React.FC = () => {
 
             {/* Messages Area */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
-              {messages.length > 0 &&
-                messages.map((message) => {
-                  return (
+            {messages.length > 0 &&
+              messages.map((message) => {
+                const messageDate = moment(message.timeStamp).format("MMMM D, YYYY");
+                const showDate = messageDate !== lastRenderedDate; 
+                lastRenderedDate = showDate ? messageDate : lastRenderedDate;
+
+                return (
+                  <React.Fragment key={message._id}>
+                    {showDate && (
+                      <span
+                        className="block text-center text-gray-500 text-sm my-2"
+                      >
+                        {formatMsgDate(message.timeStamp)}
+                      </span>
+                    )}
                     <ChatMessage
-                      key={message._id}
                       content={message.content}
                       timeStamp={message.timeStamp}
                       isGroupChat={message.isGroupChat}
                       sender={message.sender}
                     />
-                  )
-                })}
+                  </React.Fragment>
+                );
+              })}
             </div>
 
             <MessageInput chatId={selectedChat._id} />
